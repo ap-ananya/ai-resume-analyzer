@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Resume Analyzer</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>AI Resume Analyzer</h1>
+    <p class="subtitle">
+        Upload your resume and compare it with a job description
+    </p>
+
+    <form action="/analyze" method="POST" enctype="multipart/form-data">
+
+        <!-- Resume Upload -->
+        <div class="card">
+            <label class="label">Upload Resume (PDF/DOCX)</label>
+            <input type="file" name="resume" required>
+        </div>
+
+        <!-- Job Description -->
+        <div class="card">
+            <label class="label">Paste Job Description</label>
+            <textarea name="job_description" rows="8" placeholder="Paste job description here..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn">Analyze Resume</button>
+    </form>
+
+    <!-- Results Section (Flask will render this later) -->
+    {% if score %}
+    <div class="results">
+        <h2>Analysis Results</h2>
+
+        <p><strong>Match Score:</strong> {{ score }}%</p>
+
+        <div class="result-box">
+            <h3>Section-wise Match</h3>
+            <ul>
+                <li>Skills Match: {{ section_scores.skills }}%</li>
+                <li>Experience Match: {{ section_scores.experience }}%</li>
+                <li>Education Match: {{ section_scores.education }}%</li>
+            </ul>
+        </div>
+
+        <div class="result-box">
+            <h3>ATS Missing Keywords</h3>
+            <ul>
+                {% for keyword in ats_keywords %}
+                <li class="bad">{{ keyword }}</li>
+                {% endfor %}
+            </ul>
+
+            {% if ats_keywords %}
+            <p><strong>Suggestion:</strong> Add these keywords naturally in Skills, Projects, or Experience sections.</p>
+            {% else %}
+            <p><strong>Great!</strong> Your resume is ATS-optimized.</p>
+            {% endif %}
+        </div>
+
+
+        <div class="result-box">
+            <h3>Matching Skills</h3>
+            <ul>
+                {% for skill in matched_skills %}
+                <li class="good">{{ skill }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="result-box">
+            <h3>Missing Skills</h3>
+            <ul>
+                {% for skill in missing_skills %}
+                <li class="bad">{{ skill }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="result-box">
+            <h3>Suggestions</h3>
+            <ul>
+                {% for tip in suggestions %}
+                <li>{{ tip }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

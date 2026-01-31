@@ -1,0 +1,3 @@
+ctrl C for exit in terminal which is running on local host
+
+python app.py for running on the local host 
